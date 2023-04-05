@@ -2,7 +2,10 @@
 
 package com.example.iochat.screens
 
-import android.util.Log
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,25 +23,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.iochat.R
+import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.model.ChatViewModel
+import com.example.iochat.service.NotificationService
+
 
 @Composable
 fun ChatAppScreen(
-    chatViewModel: ChatViewModel = ChatViewModel(),
+    chatViewModel: ChatViewModel = ChatViewModel(LocalContext.current),
     navController: NavHostController = rememberNavController(),
 ) {
-
+    val context = LocalContext.current
     Scaffold(
         modifier = Modifier.background(MaterialTheme.colors.primary),
         topBar = { ToolbarChat() },
         content = { paddingValues ->
+
+            BackHandler(false) {
+                chatViewModel.mSocket.disconnect()
+            }
             ListCardMessage(
                 paddingValues = paddingValues,
                 chatViewModel = chatViewModel
@@ -52,7 +66,7 @@ fun ChatAppScreen(
 
 @Composable
 fun ChatBottomBar(
-    viewModel: ChatViewModel = ChatViewModel()
+    viewModel: ChatViewModel = ChatViewModel(context = LocalContext.current),
 ) {
     var message by remember {
         mutableStateOf("")
@@ -66,7 +80,7 @@ fun ChatBottomBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
 
-            IconButton(onClick = {  }) {
+            IconButton(onClick = { }) {
                 Icon(
                     painter = painterResource(id = R.drawable.round_call_24),
                     contentDescription = "image",
@@ -76,17 +90,25 @@ fun ChatBottomBar(
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = message,
-                onValueChange = {message = it},
+                onValueChange = { message = it },
                 trailingIcon = {
                     IconButton(onClick = {
                         viewModel.handleClick(message)
                     }) {
-                        Icon(painter = painterResource(id = R.drawable.round_send_24), contentDescription = "Send")
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_send_24),
+                            contentDescription = "Send"
+                        )
                     }
-                }
+                },
+                placeholder = {
+                    Text(text = "Nhập tin nhắn..")
+                },
+                colors = TextFieldDefaults.textFieldColors(MaterialTheme.colors.surface)
             )
         }
     }
+
 }
 
 @Preview(showBackground = true)
@@ -129,7 +151,7 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = "Admin",
+                    text = UserCurrentConfig.idUserChating,
                     color = MaterialTheme.colors.surface,
                     fontSize = MaterialTheme.typography.body1.fontSize
                 )
@@ -161,13 +183,12 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
 @Composable
 fun ListCardMessage(
     paddingValues: PaddingValues = PaddingValues(0.dp),
-    chatViewModel: ChatViewModel = ChatViewModel(),
+    chatViewModel: ChatViewModel = ChatViewModel(LocalContext.current),
 ) {
     val array by chatViewModel._content.collectAsState()
     LazyColumn {
         items(array) {
             CardMessage(it.message)
-            Log.d("CONTENT", it.message)
         }
     }
 }

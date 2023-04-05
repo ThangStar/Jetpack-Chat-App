@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             IOChatTheme {
                 // A surface container using the 'background' color from the theme
-                val chatViewModel = viewModels<ChatViewModel>().value
                 navController = rememberNavController()
                 SetUpNavGraph(navController = navController)
             }

@@ -6,22 +6,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.iochat.screens.ChatAppScreen
 import com.example.iochat.screens.HomeScreen
+import com.example.iochat.screens.LoginScreen
 
 @Composable
 fun SetUpNavGraph(
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = Screen.HomeScreen.route){
+    NavHost(navController = navController, startDestination = Screen.LoginScreen.route){
         composable(
-            route = Screen.ChatScreen.route
+            route = Screen.LoginScreen.route
         ){
-            ChatAppScreen(navController = navController)
+            LoginScreen(navController = navController
+            )
         }
-
         composable(
             route = Screen.HomeScreen.route
         ){
             HomeScreen(navController = navController)
+        }
+
+        composable(
+            route = Screen.ChatScreen.route
+        ){
+            ChatAppScreen(navController = navController)
         }
     }
 }

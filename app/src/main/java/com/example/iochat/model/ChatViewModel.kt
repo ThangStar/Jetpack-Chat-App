@@ -1,21 +1,36 @@
 package com.example.iochat.model
 
+import android.app.Notification
+import android.app.NotificationManager
+import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.iochat.config.APIConfig
+import com.example.iochat.config.UserCurrentConfig
+import com.example.iochat.network.ChatAPI
 import com.example.iochat.`object`.Message
+import com.example.iochat.service.NotificationService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.reflect.Constructor
 import java.net.URISyntaxException
+import javax.inject.Inject
 
-
-class ChatViewModel : ViewModel() {
-    val mSocket = IO.socket("http://192.168.1.13:3002")
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    context: Context
+): ViewModel(){
+    val mSocket = IO.socket(APIConfig.APISocketIO)
     var _content = MutableStateFlow<Array<Message>>(emptyArray())
 
     val content
@@ -24,38 +39,69 @@ class ChatViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                val deffValue = async {
-                    connectToSocket()
-                    getMessage()
-                }.await()
+                withContext(Dispatchers.IO) {
+                    initDataMessage() //from retrofit
+                    withContext(Dispatchers.IO) {
+                        connectToSocket()
+                        mSocket.emit("initIdDb", UserCurrentConfig.id)
+                        mSocket.emit("room-broadcast", UserCurrentConfig.idUserChating)
+                        reloadMessage(context,"message-broadcast")
+                    }
+                }
+
             } catch (e: URISyntaxException) {
                 Log.d("IO", "ERROR IO")
             }
         }
     }
 
-    fun handleClick(message: String?) {
-        mSocket.emit("message-public", message)
+    fun handleClick(message: String) {
+        viewModelScope.launch {
+            val objectMessage = Message(UserCurrentConfig.id, message, "broadcast", UserCurrentConfig.idUserChating)
+            val jsonObjectMessage = Gson().toJson(objectMessage)
+            mSocket.emit("add-message", jsonObjectMessage)
+            _content.value += Message(UserCurrentConfig.id, message, "", UserCurrentConfig.idUserChating)
+        }
     }
 
     private suspend fun connectToSocket() {
         mSocket.connect()
     }
 
-    suspend fun getMessage() {
+    private suspend fun reloadMessage(context: Context, event: String) {
         var listMessage = arrayOf<Message>()
-        mSocket.on("message") { arg ->
-            if (arg.size > 0) {
+        mSocket.on(event) { arg ->
+            Log.d("SSS ARG: ", arg.toString())
+            if (arg.isNotEmpty()) {
                 val gson = Gson();
                 val jsonArray = arg[0].toString()
                 //array json to array object
                 val type = object : TypeToken<Array<Message>>() {}.type
                 listMessage = gson.fromJson<Array<Message>>(jsonArray, type)
-                listMessage.forEach {
-                    Log.d("SSS", it.message)
+                Log.d("SSS SIZE MESSAGE", "${listMessage.size}")
+                listMessage.map {
+                    Log.d("SSS CONTENT ", it.message);
+                    Log.d("SSS CONTENT ", it.idUserGet);
+                    Log.d("SSS CONTENT ", it.idUserSend);
+                    Log.d("SSS CONTENT ", it.target);
                 }
-                _content.value = listMessage
+                if(listMessage[0].idUserSend == UserCurrentConfig.idUserChating){
+                    _content.value += listMessage
+                }else {
+                    // send a nofication
+                    NotificationService(context).showNotification("hi", listMessage[0].message)
+                }
             }
+        }
+    }
+
+    suspend fun initDataMessage() {
+        try {
+            val data =
+                ChatAPI.retrofitService.getMessageByTarget()
+            _content.value = data
+        } catch (ex: Exception) {
+            Log.d("ERROR", ex.message.toString())
         }
     }
 }
