@@ -14,7 +14,8 @@ import com.example.iochat.model.ChatViewModel
 import com.example.iochat.navigate.SetUpNavGraph
 import com.example.iochat.screens.ChatAppScreen
 import com.example.iochat.ui.theme.IOChatTheme
-
+import dagger.hilt.android.AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {

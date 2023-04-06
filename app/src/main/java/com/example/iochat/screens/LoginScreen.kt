@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -15,10 +17,13 @@ import com.example.iochat.model.LoginViewModel
 @Composable
 fun LoginScreen(
     navController: NavHostController = rememberNavController(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     Scaffold(
         content = { paddingValues ->
-            ContentLogin(paddingValues = paddingValues, navController = navController)
+            ContentLogin(paddingValues = paddingValues, navController = navController,
+                loginViewModel = loginViewModel
+            )
         }
     )
 }
@@ -31,10 +36,12 @@ fun ContentLogin(
     navController: NavHostController = rememberNavController(),
 ) {
     var username by remember {
-        mutableStateOf("")
+        mutableStateOf(loginViewModel.getUsernameDefault())
     }
     var password by remember {
-        mutableStateOf("")
+        mutableStateOf(
+            loginViewModel.getPasswordDefault()
+        )
     }
     Box() {
         Column(

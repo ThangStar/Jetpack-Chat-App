@@ -2,9 +2,6 @@
 
 package com.example.iochat.screens
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -12,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -23,28 +21,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.iochat.R
 import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.model.ChatViewModel
-import com.example.iochat.service.NotificationService
 
 
 @Composable
 fun ChatAppScreen(
-    chatViewModel: ChatViewModel = ChatViewModel(LocalContext.current),
+    chatViewModel: ChatViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
-    val context = LocalContext.current
     Scaffold(
         modifier = Modifier.background(MaterialTheme.colors.primary),
         topBar = { ToolbarChat() },
@@ -66,7 +59,7 @@ fun ChatAppScreen(
 
 @Composable
 fun ChatBottomBar(
-    viewModel: ChatViewModel = ChatViewModel(context = LocalContext.current),
+    viewModel: ChatViewModel = viewModel(),
 ) {
     var message by remember {
         mutableStateOf("")
@@ -183,12 +176,20 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
 @Composable
 fun ListCardMessage(
     paddingValues: PaddingValues = PaddingValues(0.dp),
-    chatViewModel: ChatViewModel = ChatViewModel(LocalContext.current),
+    chatViewModel: ChatViewModel = viewModel(),
 ) {
     val array by chatViewModel._content.collectAsState()
-    LazyColumn {
+    val listState = rememberLazyListState()
+    LazyColumn(
+        state = listState
+    ) {
         items(array) {
             CardMessage(it.message)
+        }
+    }
+    LaunchedEffect(Unit) {
+        if (listState.layoutInfo.totalItemsCount > 0) {
+            listState.scrollToItem(listState.layoutInfo.totalItemsCount - 1)
         }
     }
 }

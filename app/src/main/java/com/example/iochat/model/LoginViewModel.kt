@@ -1,21 +1,43 @@
 package com.example.iochat.model
 
+import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.example.iochat.config.ModuleConfig
 import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.navigate.Screen
 import com.example.iochat.network.ChatAPI
 import com.example.iochat.`object`.Auth
-import kotlinx.coroutines.async
-import kotlinx.coroutines.isActive
+import com.example.iochat.utils.MySharedPreferences
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
-import java.util.Objects
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+   @ApplicationContext val context: Context,
+) : ViewModel() {
+    private val myShare = MySharedPreferences(context).getSharedPref()
+
+    fun getUsernameDefault(): String {
+        return MySharedPreferences(context).getString(
+            ModuleConfig.KEY_USERNAME,
+            "",
+            myShare
+        )
+    }
+
+    fun getPasswordDefault(): String {
+        return MySharedPreferences(context).getString(
+            ModuleConfig.KEY_PASSWORD,
+            "",
+            myShare
+        )
+    }
+
     fun checkLogin(
         username: String, password: String,
         navController: NavController,
@@ -24,13 +46,17 @@ class LoginViewModel : ViewModel() {
             try {
                 val dataUser =
                     ChatAPI.retrofitService.checkLogin(Auth(username, password))
-                if(dataUser.id != ""){
+                if (dataUser.id != "") {
                     UserCurrentConfig.id = dataUser.id
                     UserCurrentConfig.avatar = dataUser.avatar
                     UserCurrentConfig.email = dataUser.email
                     UserCurrentConfig.fullname = dataUser.fullname
                     navController.navigate(Screen.HomeScreen.route)
-                }else {
+
+                    //save to ref
+                    MySharedPreferences(context).putString(ModuleConfig.KEY_USERNAME, username, myShare)
+                    MySharedPreferences(context).putString(ModuleConfig.KEY_PASSWORD, password, myShare)
+                } else {
                     Log.d("SSS", "LOGIN FAIL");
                 }
             } catch (ex: Exception) {

@@ -29,8 +29,8 @@ interface ChatAppAPIService {
     @POST("/get-user-chated-by-id-mb")
     suspend fun getListUser(@Body yourId: UserCurrent): Array<User>
 
-    @GET("/get-message-by-target")
-    suspend fun getMessageByTarget(): Array<Message>
+    @POST("/get-message-room-broadcast")
+    suspend fun getMessageRoomBroadCast(@Body message: Message): Array<Message>
 
     @POST("/check-login-mb")
     suspend fun checkLogin(@Body data: Auth): UserCurrent

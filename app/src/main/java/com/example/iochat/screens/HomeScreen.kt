@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -19,10 +20,11 @@ import coil.compose.AsyncImage
 import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.model.HomeViewModel
 import com.example.iochat.navigate.Screen
+import com.example.iochat.`object`.User
 
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     Scaffold(
@@ -39,7 +41,6 @@ fun HomeScreen(
     )
 }
 
-val list = arrayListOf<String>("as", "dsad")
 
 @Composable
 fun ListCardUser(
@@ -50,7 +51,7 @@ fun ListCardUser(
     val listUser = homeViewModel.listUSer.collectAsState()
     LazyColumn() {
         items(listUser.value) {
-            CardUser(name = it.fullName, navController = navController, avatar = it.avatar, idUserChat = it._id)
+            CardUser(navController = navController, user = it)
         }
     }
 }
@@ -58,16 +59,16 @@ fun ListCardUser(
 @Composable
 fun CardUser(
     modifier: Modifier = Modifier.fillMaxWidth(),
-    name: String = "NO NAME",
     navController: NavHostController = rememberNavController(),
-    avatar: String = "https://img.freepik.com/free-icon/motorcyclist_318-210119.jpg",
-    idUserChat: String = "",
+    user: User = User("", "", "")
 ) {
     Card(
         backgroundColor = MaterialTheme.colors.primaryVariant,
         modifier = modifier.clickable {
             navController.navigate(Screen.ChatScreen.route)
-            UserCurrentConfig.idUserChating = idUserChat
+            UserCurrentConfig.idUserChating = user._id
+            UserCurrentConfig.avatarUserChating = user.avatar
+            UserCurrentConfig.nameUserChating = user.fullName
         },
     ) {
         Row(
@@ -75,11 +76,11 @@ fun CardUser(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = avatar,
+                model = user.avatar,
                 contentDescription = "avatar",
                 modifier = Modifier.size(36.dp)
             )
-            Text(text = name, color = MaterialTheme.colors.surface)
+            Text(text = user.fullName, color = MaterialTheme.colors.surface)
         }
     }
 }

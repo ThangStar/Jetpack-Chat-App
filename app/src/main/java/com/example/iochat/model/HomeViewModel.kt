@@ -10,19 +10,23 @@ import com.example.iochat.`object`.User
 import com.example.iochat.`object`.UserCurrent
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Objects
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(age: Int): ViewModel() {
     private var _listUser = MutableStateFlow<Array<User>>(emptyArray())
 
     val listUSer
         get() = _listUser.asStateFlow()
 
     init {
+        Log.d("SSS", "HOME VIEW MODEL CALLing params is.."+age)
         reloadListUser()
     }
 

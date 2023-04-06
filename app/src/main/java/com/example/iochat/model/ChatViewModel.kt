@@ -16,6 +16,7 @@ import com.example.iochat.service.NotificationService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.socket.client.IO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    context: Context
-): ViewModel(){
+    @ApplicationContext context: Context,
+) : ViewModel() {
     val mSocket = IO.socket(APIConfig.APISocketIO)
     var _content = MutableStateFlow<Array<Message>>(emptyArray())
 
@@ -37,16 +38,15 @@ class ChatViewModel @Inject constructor(
         get() = _content.asStateFlow()
 
     init {
+        Log.d("SSS", "CHAT VIEW MODEL CALLing..")
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
                     initDataMessage() //from retrofit
-                    withContext(Dispatchers.IO) {
-                        connectToSocket()
-                        mSocket.emit("initIdDb", UserCurrentConfig.id)
-                        mSocket.emit("room-broadcast", UserCurrentConfig.idUserChating)
-                        reloadMessage(context,"message-broadcast")
-                    }
+                    connectToSocket()
+                    mSocket.emit("initIdDb", UserCurrentConfig.id)
+                    mSocket.emit("room-broadcast", UserCurrentConfig.idUserChating)
+                    reloadMessage(context, "message-broadcast")
                 }
 
             } catch (e: URISyntaxException) {
@@ -57,10 +57,16 @@ class ChatViewModel @Inject constructor(
 
     fun handleClick(message: String) {
         viewModelScope.launch {
-            val objectMessage = Message(UserCurrentConfig.id, message, "broadcast", UserCurrentConfig.idUserChating)
+            val objectMessage =
+                Message(UserCurrentConfig.id, message, "broadcast", UserCurrentConfig.idUserChating)
             val jsonObjectMessage = Gson().toJson(objectMessage)
             mSocket.emit("add-message", jsonObjectMessage)
-            _content.value += Message(UserCurrentConfig.id, message, "", UserCurrentConfig.idUserChating)
+            _content.value += Message(
+                UserCurrentConfig.id,
+                message,
+                "",
+                UserCurrentConfig.idUserChating
+            )
         }
     }
 
@@ -85,20 +91,28 @@ class ChatViewModel @Inject constructor(
                     Log.d("SSS CONTENT ", it.idUserSend);
                     Log.d("SSS CONTENT ", it.target);
                 }
-                if(listMessage[0].idUserSend == UserCurrentConfig.idUserChating){
+                if (listMessage[0].idUserSend == UserCurrentConfig.idUserChating) {
                     _content.value += listMessage
-                }else {
+                } else {
                     // send a nofication
-                    NotificationService(context).showNotification("hi", listMessage[0].message)
+                    NotificationService(context).showNotification(
+                        "Tin nhắn mới",
+                        listMessage[0].message
+                    )
                 }
             }
         }
     }
 
-    suspend fun initDataMessage() {
+    private suspend fun initDataMessage() {
         try {
             val data =
-                ChatAPI.retrofitService.getMessageByTarget()
+                ChatAPI.retrofitService.getMessageRoomBroadCast(
+                    Message(
+                        idUserSend = UserCurrentConfig.id,
+                        idUserGet = UserCurrentConfig.idUserChating, message = "", target = ""
+                    )
+                )
             _content.value = data
         } catch (ex: Exception) {
             Log.d("ERROR", ex.message.toString())

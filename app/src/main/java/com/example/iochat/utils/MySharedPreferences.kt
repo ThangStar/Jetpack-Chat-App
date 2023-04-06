@@ -8,7 +8,7 @@ class MySharedPreferences(
     val context: Context,
 ) {
     fun getSharedPref(): SharedPreferences {
-        val sharedPref: SharedPreferences = context.getSharedPreferences("Auth", 0)
+        val sharedPref: SharedPreferences = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
         //get Editor
         return sharedPref
     }
@@ -17,11 +17,12 @@ class MySharedPreferences(
         try {
             val myEditer = sharedPref.edit()
             myEditer.putString(key, value)
+            myEditer.apply()
         } catch (ex: Exception) {
             Log.d("SSS", "PUT VALUE ERROR: $ex")
         }
     }
-    fun getString(key: String, valueIfError: String, sharedPref: SharedPreferences): String? {
-        return sharedPref.getString(key, valueIfError)
+    fun getString(key: String, defaultValue: String, sharedPref: SharedPreferences): String {
+        return sharedPref.getString(key, defaultValue).toString()
     }
 }

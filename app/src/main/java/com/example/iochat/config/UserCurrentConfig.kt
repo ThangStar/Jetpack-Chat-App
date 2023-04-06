@@ -9,4 +9,7 @@ object UserCurrentConfig {
     var fullname = ""
 
     var idUserChating = ""
+    var avatarUserChating = ""
+    var nameUserChating = ""
+
 }

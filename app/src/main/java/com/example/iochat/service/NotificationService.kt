@@ -12,7 +12,7 @@ class NotificationService(
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     fun showNotification(title: String, subTitle: String){
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.round_send_24)
+            .setSmallIcon(R.drawable.round_mark_chat_unread_24)
             .setContentTitle(title)
             .setContentText(subTitle)
             .build()
