@@ -26,13 +26,13 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface ChatAppAPIService {
-    @POST("/get-user-chated-by-id-mb")
+    @POST("user/get-user-chated-by-id-mb")
     suspend fun getListUser(@Body yourId: UserCurrent): Array<User>
 
-    @POST("/get-message-room-broadcast")
+    @POST("/message/get-message-room-broadcast")
     suspend fun getMessageRoomBroadCast(@Body message: Message): Array<Message>
 
-    @POST("/check-login-mb")
+    @POST("/auth/check-login-mb")
     suspend fun checkLogin(@Body data: Auth): UserCurrent
 }
 

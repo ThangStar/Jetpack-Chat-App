@@ -28,9 +28,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.iochat.R
+import com.example.iochat.config.APIConfig
 import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.model.ChatViewModel
+import com.example.iochat.`object`.User
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -132,13 +137,14 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
                     tint = MaterialTheme.colors.surface
                 )
             }
-            Image(
-                painter = painterResource(id = R.drawable.default_avatar),
+            AsyncImage(
+                model = "${APIConfig.APIChatApp}/images/${UserCurrentConfig.avatarUserChating}",
                 contentDescription = "AVATAR",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(36.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                placeholder = painterResource(id = R.drawable.ic_launcher_background)
             )
             Column(
                 modifier = Modifier.padding(horizontal = 8.dp),
@@ -179,19 +185,24 @@ fun ListCardMessage(
     chatViewModel: ChatViewModel = viewModel(),
 ) {
     val array by chatViewModel._content.collectAsState()
-    val listState = rememberLazyListState()
+    val state = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     LazyColumn(
-        state = listState
+        state = state
     ) {
+        coroutineScope.launch {
+            if (array.isNotEmpty()) {
+                state.animateScrollToItem(
+                    array.size - 1
+                )
+            }
+        }
         items(array) {
             CardMessage(it.message)
         }
     }
-    LaunchedEffect(Unit) {
-        if (listState.layoutInfo.totalItemsCount > 0) {
-            listState.scrollToItem(listState.layoutInfo.totalItemsCount - 1)
-        }
-    }
+
 }
 
 @Composable

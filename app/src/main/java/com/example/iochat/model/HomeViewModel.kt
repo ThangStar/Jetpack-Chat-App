@@ -26,7 +26,6 @@ class HomeViewModel @Inject constructor(age: Int): ViewModel() {
         get() = _listUser.asStateFlow()
 
     init {
-        Log.d("SSS", "HOME VIEW MODEL CALLing params is.."+age)
         reloadListUser()
     }
 

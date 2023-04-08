@@ -15,14 +15,14 @@ object ViewModelModule {
     /*
     *
     * find and inject to params in your view model
+    * util: find name class same params in view model (anonitasion) @hiltViewModel @Inject
     *
-    * return require other
+    * require: return other name class
     *
     * */
 
     @Provides
     fun getContext(@ApplicationContext context: Context): Context{
-        Log.d("SSS", "U BINDED CONTEXT")
         return context
     }
 }

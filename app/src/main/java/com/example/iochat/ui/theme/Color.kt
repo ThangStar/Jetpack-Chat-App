@@ -8,3 +8,15 @@ val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 val Gray100 = Color(0xFFF5F5F5)
 val Silver200 = Color(0xFFC0C0C0)
+val Blue800 = Color(0xFF204763)
+val Green200 = Color(0xFF93D0E2)
+val Green800 = Color(0xFF6A8395)
+
+val InTextField = Color(0xFF2C4F69)
+val InTextFieldSearch = Color(0xFF01001F)
+
+val ValueTextField = Color(0xFFFFFFFF)
+val TextLeading = Color(0xFFF5F5F5)
+
+val BgGradientStart = Color(0xFF03012C)
+val BgGradientEnd = Color(0xD003012C)
