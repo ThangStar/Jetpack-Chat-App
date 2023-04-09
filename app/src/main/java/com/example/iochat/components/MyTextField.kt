@@ -36,7 +36,7 @@ fun MyTextField(
         colors = TextFieldDefaults.textFieldColors(
             textColor = ValueTextField,
             disabledTextColor = Color.Transparent,
-            backgroundColor = InTextField,
+            backgroundColor = InTextFieldSearch,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent

@@ -30,10 +30,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.iochat.R
+import com.example.iochat.components.MyCardMessageGet
+import com.example.iochat.components.MyCardMessageSend
 import com.example.iochat.config.APIConfig
 import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.model.ChatViewModel
+import com.example.iochat.`object`.Message
 import com.example.iochat.`object`.User
+import com.example.iochat.ui.theme.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -46,6 +50,7 @@ fun ChatAppScreen(
     Scaffold(
         modifier = Modifier.background(MaterialTheme.colors.primary),
         topBar = { ToolbarChat() },
+        backgroundColor = BgGradientStart,
         content = { paddingValues ->
 
             BackHandler(false) {
@@ -71,40 +76,39 @@ fun ChatBottomBar(
     }
     Row(
         Modifier
-            .background(MaterialTheme.colors.primaryVariant)
+            .background(ContainerInputSendMessage)
             .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(topEnd = 24.dp, topStart = 24.dp))
     ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
-        ) {
-
-            IconButton(onClick = { }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_call_24),
-                    contentDescription = "image",
-                    tint = Color(0xFF676767)
-                )
-            }
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = message,
-                onValueChange = { message = it },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        viewModel.handleClick(message)
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_send_24),
-                            contentDescription = "Send"
-                        )
-                    }
-                },
-                placeholder = {
-                    Text(text = "Nhập tin nhắn..")
-                },
-                colors = TextFieldDefaults.textFieldColors(MaterialTheme.colors.surface)
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 26.dp),
+            value = message,
+            onValueChange = { message = it },
+            trailingIcon = {
+                IconButton(onClick = {
+                    viewModel.handleClick(message)
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_send_24),
+                        contentDescription = "Send",
+                        tint = TintIcon
+                    )
+                }
+            },
+            placeholder = {
+                Text(text = "Nhập tin nhắn..", color = TextLeading)
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = TextLeading,
+                disabledTextColor = Color.Transparent,
+                backgroundColor = BgInputSendMessage,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
             )
-        }
+        )
     }
 
 }
@@ -119,7 +123,6 @@ fun PrevChatBottomBar() {
 fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colors.primaryVariant)
             .clip(RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
     ) {
         Row(
@@ -134,7 +137,7 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
                     contentDescription = null,
-                    tint = MaterialTheme.colors.surface
+                    tint = TextLeading
                 )
             }
             AsyncImage(
@@ -151,12 +154,12 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
             ) {
                 Text(
                     text = UserCurrentConfig.idUserChating,
-                    color = MaterialTheme.colors.surface,
+                    color = TextLeading,
                     fontSize = MaterialTheme.typography.body1.fontSize
                 )
                 Text(
                     text = "Hoạt động 6 phút trước",
-                    color = MaterialTheme.colors.surface,
+                    color = TextLeading,
                     fontSize = MaterialTheme.typography.caption.fontSize
                 )
             }
@@ -165,14 +168,14 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
                 Icon(
                     painter = painterResource(id = R.drawable.round_videocam_24),
                     contentDescription = null,
-                    tint = MaterialTheme.colors.surface
+                    tint = TextLeading
                 )
             }
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
                     painter = painterResource(id = R.drawable.round_call_24),
                     contentDescription = null,
-                    tint = MaterialTheme.colors.surface
+                    tint = TextLeading
                 )
             }
         }
@@ -189,7 +192,10 @@ fun ListCardMessage(
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
-        state = state
+        state = state,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = paddingValues.calculateBottomPadding())
     ) {
         coroutineScope.launch {
             if (array.isNotEmpty()) {
@@ -199,7 +205,7 @@ fun ListCardMessage(
             }
         }
         items(array) {
-            CardMessage(it.message)
+            CardMessage(message = it)
         }
     }
 
@@ -207,41 +213,30 @@ fun ListCardMessage(
 
 @Composable
 fun CardMessage(
-    messageContent: String = "Hey guys. How r u today?",
+    message: Message = Message(),
     paddingValues: PaddingValues = PaddingValues(0.dp),
 ) {
-    var isShowTime = remember {
+    var isShowTime by remember {
         mutableStateOf(false)
     }
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        backgroundColor = MaterialTheme.colors.primaryVariant,
-        onClick = {
-            isShowTime.value = !isShowTime.value
-        }
-    ) {
-        Column(
-            modifier = Modifier.padding(
-                horizontal = 12.dp,
-                vertical = 16.dp
-            )
-
-        ) {
-            Text(
-                text = messageContent,
-                color = MaterialTheme.colors.surface
-            )
-            AnimatedVisibility(visible = isShowTime.value) {
-                Text(
-                    text = "11h30p",
-                    color = MaterialTheme.colors.secondaryVariant,
-                    modifier = Modifier.padding(top = 6.dp),
-                    fontSize = MaterialTheme.typography.caption.fontSize
-                )
-            }
-        }
+    if (message.idUserSend == UserCurrentConfig.id) {
+        MyCardMessageSend(
+            content = message.message,
+            onClick = {
+                isShowTime = !isShowTime
+            },
+            isExpand = isShowTime
+        )
+    } else {
+        MyCardMessageGet(
+            content = message.message,
+            onClick = {
+                isShowTime = !isShowTime
+            },
+            isExpand = isShowTime
+        )
     }
+
 }
 
 @Preview

@@ -20,3 +20,9 @@ val TextLeading = Color(0xFFF5F5F5)
 
 val BgGradientStart = Color(0xFF03012C)
 val BgGradientEnd = Color(0xD003012C)
+val BgMessageSend = Color(0xFF002388)
+val BgMessageGet = Color(0xFF30343F)
+val ContainerInputSendMessage = Color(0xFF03162B)
+val BgInputSendMessage = Color(0xFF021C38)
+
+val TintIcon = Color(0xFFFF506E)

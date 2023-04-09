@@ -38,7 +38,6 @@ class ChatViewModel @Inject constructor(
         get() = _content.asStateFlow()
 
     init {
-        Log.d("SSS", "CHAT VIEW MODEL CALLing..")
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
