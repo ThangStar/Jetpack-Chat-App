@@ -1,6 +1,7 @@
 package com.example.iochat
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -15,6 +16,9 @@ import com.example.iochat.navigate.SetUpNavGraph
 import com.example.iochat.screens.ChatAppScreen
 import com.example.iochat.ui.theme.IOChatTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.Socket
+import javax.inject.Inject
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
@@ -28,4 +32,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        mSocket.disconnect()
+    }
 }
+

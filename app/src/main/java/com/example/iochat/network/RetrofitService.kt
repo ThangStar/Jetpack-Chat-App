@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 
 private const val BASE_URL =
@@ -34,6 +35,9 @@ interface ChatAppAPIService {
 
     @POST("/auth/check-login-mb")
     suspend fun checkLogin(@Body data: Auth): UserCurrent
+
+    @GET("/user/search")
+    suspend fun searchByNameOrEmail(@Query("q") keyWord: String): Array<User>
 }
 
 object ChatAPI {

@@ -3,7 +3,14 @@
 package com.example.iochat.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,6 +19,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -22,6 +31,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,15 +59,17 @@ fun ChatAppScreen(
     chatViewModel: ChatViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
+    BackHandler(false) {
+        chatViewModel.disConnect()
+        UserCurrentConfig.resetUserChating()
+    }
     Scaffold(
         modifier = Modifier.background(MaterialTheme.colors.primary),
-        topBar = { ToolbarChat() },
+        topBar = { ToolbarChat(chatViewModel = chatViewModel, navController = navController) },
         backgroundColor = BgGradientStart,
         content = { paddingValues ->
 
-            BackHandler(false) {
-                chatViewModel.mSocket.disconnect()
-            }
+
             ListCardMessage(
                 paddingValues = paddingValues,
                 chatViewModel = chatViewModel
@@ -89,6 +103,7 @@ fun ChatBottomBar(
             trailingIcon = {
                 IconButton(onClick = {
                     viewModel.handleClick(message)
+                    message = ""
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_send_24),
@@ -107,7 +122,11 @@ fun ChatBottomBar(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
-            )
+            ),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Send
+            ),
+            shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
         )
     }
 
@@ -120,7 +139,11 @@ fun PrevChatBottomBar() {
 }
 
 @Composable
-fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
+fun ToolbarChat(
+    chatViewModel: ChatViewModel = viewModel(),
+    paddingValues: PaddingValues = PaddingValues(),
+    navController: NavHostController = rememberNavController(),
+) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
@@ -133,7 +156,12 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
 
         ) {
 
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                navController.popBackStack()
+                UserCurrentConfig.resetUserChating()
+                chatViewModel.disConnect()
+
+            }) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
                     contentDescription = null,
@@ -182,6 +210,7 @@ fun ToolbarChat(paddingValues: PaddingValues = PaddingValues()) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ListCardMessage(
     paddingValues: PaddingValues = PaddingValues(0.dp),

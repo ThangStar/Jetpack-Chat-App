@@ -1,0 +1,8 @@
+
+Nkotlin:S1172E"0Remove this unused function parameter "context".(ß­è	8¼ã“Âö0
+Dkotlin:S6305" Don't expose mutable flow types.(¤ùÁÑøÿÿÿÿ8†Ë‚Âö0
+qkotlin:S1192Q"MDefine a constant instead of duplicating this literal "SSS CONTENT " 4 times.(˜´³†ùÿÿÿÿ8Œ¢…Âö0
+;kotlin:S6310$"Avoid hardcoded dispatchers.(Ô¥‚ü8Â¢…Âö0
+Skotlin:S1144A"4Remove this unused private "connectToSocket" method.(ñõ†Ô8Íã“Âö0
+Jkotlin:S6318A"+Remove this unnecessary "suspend" modifier.(ñõ†Ô8Îã“Âö0
+Hkotlin:S2116H"$Use "contentDeepToString()" instead.(íıú«úÿÿÿÿ8Ğã“Âö0

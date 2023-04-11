@@ -11,11 +11,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 @Module
 @InstallIn(ViewModelComponent::class)
 object ViewModelModule {
-
     /*
     *
     * find and inject to params in your view model
-    * util: find name class same params in view model (anonitasion) @hiltViewModel @Inject
+    * util: find name class same params in view model (annotation) @hiltViewModel @Inject
     *
     * require: return other name class
     *

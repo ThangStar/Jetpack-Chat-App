@@ -1,6 +1,9 @@
 package com.example.iochat.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -61,6 +64,7 @@ fun MyCardMessageGet(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MyCardMessageSend(
     modifier: Modifier = Modifier,
@@ -72,6 +76,7 @@ fun MyCardMessageSend(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+
     ) {
         Spacer(modifier = Modifier.weight(1f))
         Card(
@@ -81,6 +86,7 @@ fun MyCardMessageSend(
                     onClick()
                 }
                 .padding(vertical = 10.dp, horizontal = 12.dp),
+
             shape = RoundedCornerShape(
                 topStart = 12.dp,
                 topEnd = 12.dp,

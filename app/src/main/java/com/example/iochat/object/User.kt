@@ -7,4 +7,5 @@ open class User(
     @SerializedName("fullname")
     val fullName: String,
     val avatar: String,
+    val email: String
 )

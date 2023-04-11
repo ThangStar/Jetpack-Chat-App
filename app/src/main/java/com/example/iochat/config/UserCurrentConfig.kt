@@ -12,4 +12,8 @@ object UserCurrentConfig {
     var avatarUserChating = ""
     var nameUserChating = ""
 
+
+    fun resetUserChating () {
+        var idUserChating = ""
+    }
 }

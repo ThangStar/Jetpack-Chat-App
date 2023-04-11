@@ -1,11 +1,7 @@
 package com.example.iochat.model
 
-import android.app.Notification
-import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.iochat.config.APIConfig
@@ -23,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.reflect.Constructor
 import java.net.URISyntaxException
 import javax.inject.Inject
 
@@ -31,7 +26,7 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     @ApplicationContext context: Context,
 ) : ViewModel() {
-    val mSocket = IO.socket(APIConfig.APISocketIO)
+    val mSocket = IO.socket(APIConfig.APISocketIO).connect()
     var _content = MutableStateFlow<Array<Message>>(emptyArray())
 
     val content
@@ -41,9 +36,8 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    initDataMessage() //from retrofit
-                    connectToSocket()
                     mSocket.emit("initIdDb", UserCurrentConfig.id)
+                    initDataMessage() //from retrofit
                     mSocket.emit("room-broadcast", UserCurrentConfig.idUserChating)
                     reloadMessage(context, "message-broadcast")
                 }
@@ -66,11 +60,8 @@ class ChatViewModel @Inject constructor(
                 "",
                 UserCurrentConfig.idUserChating
             )
-        }
-    }
 
-    private suspend fun connectToSocket() {
-        mSocket.connect()
+        }
     }
 
     private suspend fun reloadMessage(context: Context, event: String) {
@@ -99,6 +90,7 @@ class ChatViewModel @Inject constructor(
                         listMessage[0].message
                     )
                 }
+              
             }
         }
     }
@@ -116,5 +108,10 @@ class ChatViewModel @Inject constructor(
         } catch (ex: Exception) {
             Log.d("ERROR", ex.message.toString())
         }
+    }
+
+    fun disConnect() {
+        Log.d("SSS", "BACK DISCONNECT")
+        mSocket.disconnect()
     }
 }

@@ -5,10 +5,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +34,6 @@ fun MyTextField(
         label = {
             Text(text = label, color = Green800)
         },
-
         colors = TextFieldDefaults.textFieldColors(
             textColor = ValueTextField,
             disabledTextColor = Color.Transparent,
@@ -40,6 +41,9 @@ fun MyTextField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password
         )
     )
 }
