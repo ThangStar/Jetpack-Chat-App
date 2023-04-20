@@ -1,7 +1,9 @@
 package com.example.iochat.model
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.iochat.config.APIConfig
@@ -22,6 +24,7 @@ import kotlinx.coroutines.withContext
 import java.net.URISyntaxException
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     @ApplicationContext context: Context,
@@ -31,8 +34,8 @@ class ChatViewModel @Inject constructor(
 
     val content
         get() = _content.asStateFlow()
-
     init {
+
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
@@ -64,6 +67,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun reloadMessage(context: Context, event: String) {
         var listMessage = arrayOf<Message>()
         mSocket.on(event) { arg ->

@@ -1,17 +1,9 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package com.example.iochat.screens
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -32,8 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,10 +37,11 @@ import com.example.iochat.config.APIConfig
 import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.model.ChatViewModel
 import com.example.iochat.`object`.Message
-import com.example.iochat.`object`.User
 import com.example.iochat.ui.theme.*
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 @Composable
@@ -68,8 +58,6 @@ fun ChatAppScreen(
         topBar = { ToolbarChat(chatViewModel = chatViewModel, navController = navController) },
         backgroundColor = BgGradientStart,
         content = { paddingValues ->
-
-
             ListCardMessage(
                 paddingValues = paddingValues,
                 chatViewModel = chatViewModel
@@ -181,7 +169,7 @@ fun ToolbarChat(
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = UserCurrentConfig.idUserChating,
+                    text = UserCurrentConfig.nameUserChating,
                     color = TextLeading,
                     fontSize = MaterialTheme.typography.body1.fontSize
                 )
@@ -254,7 +242,10 @@ fun CardMessage(
             onClick = {
                 isShowTime = !isShowTime
             },
-            isExpand = isShowTime
+            isExpand = isShowTime,
+            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(
+                message.time
+            )
         )
     } else {
         MyCardMessageGet(
@@ -262,7 +253,10 @@ fun CardMessage(
             onClick = {
                 isShowTime = !isShowTime
             },
-            isExpand = isShowTime
+            isExpand = isShowTime,
+            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(
+                message.time
+            )
         )
     }
 

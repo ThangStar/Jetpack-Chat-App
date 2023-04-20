@@ -18,10 +18,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.iochat.components.MyButton
 import com.example.iochat.components.MyTextField
 import com.example.iochat.model.LoginViewModel
+import com.example.iochat.service.NotificationService
 import com.example.iochat.ui.theme.BgGradientEnd
 import com.example.iochat.ui.theme.BgGradientStart
 import com.example.iochat.ui.theme.Green200
-import com.example.iochat.ui.theme.Green800
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun LoginScreen(
@@ -53,18 +56,50 @@ fun ContentLogin(
             loginViewModel.getPasswordDefault()
         )
     }
+    val context = LocalContext.current
+
     Box(
-        modifier = Modifier.background(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    BgGradientStart, BgGradientEnd
+        modifier = Modifier
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        BgGradientStart, BgGradientEnd
+                    )
                 )
             )
-        ).fillMaxSize()
+            .fillMaxSize()
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 12.dp)
         ) {
+            Button(
+                onClick = {
+                    NotificationService(context).showNotification(
+                        "Tin nhắn mới",
+                        "OK"
+                    )
+                },
+            ) {
+                Text(text = "SHOW NOTI", color = Color.Black)
+            }
+            Text(
+                text =
+                SimpleDateFormat("MM/dd/yy/HH/mm/ss", Locale.getDefault()).format(
+                    Calendar.getInstance().time
+                ), color = Color.White
+            )
+            Text(
+                text =
+                    Calendar.getInstance().time.toString(), color = Color.White
+            )
+
+            Button(
+                onClick = {
+                    loginViewModel.startTimMing()
+                },
+            ) {
+                Text(text = "Start timming", color = Color.Black)
+            }
             Text(
                 text = "ĐĂNG NHẬP",
                 style = MaterialTheme.typography.h5,

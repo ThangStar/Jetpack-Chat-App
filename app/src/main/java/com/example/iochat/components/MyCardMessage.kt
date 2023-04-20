@@ -27,6 +27,8 @@ fun MyCardMessageGet(
     content: String = "Content",
     onClick: () -> Unit = {},
     isExpand: Boolean = false,
+    time: String= "12h30"
+
 ) {
     Card(
         backgroundColor = BgMessageGet.copy(0.3f),
@@ -53,7 +55,7 @@ fun MyCardMessageGet(
             )
             AnimatedVisibility(visible = isExpand) {
                 Text(
-                    text = "11h30p",
+                    text = time,
                     color = MaterialTheme.colors.secondaryVariant,
                     modifier = Modifier.padding(top = 6.dp),
                     fontSize = MaterialTheme.typography.caption.fontSize
@@ -71,6 +73,7 @@ fun MyCardMessageSend(
     content: String = "Content",
     onClick: () -> Unit = {},
     isExpand: Boolean = false,
+    time: String= "12h30"
 ) {
 
     Row(
@@ -105,7 +108,7 @@ fun MyCardMessageSend(
                 )
                 AnimatedVisibility(visible = isExpand) {
                     Text(
-                        text = "11h30p",
+                        text = time,
                         color = MaterialTheme.colors.secondaryVariant,
                         modifier = Modifier.padding(top = 6.dp),
                         fontSize = MaterialTheme.typography.caption.fontSize

@@ -27,3 +27,5 @@ val ContainerInputSendMessage = Color(0xFF03162B)
 val BgInputSendMessage = Color(0xFF021C38)
 
 val TintIcon = Color(0xFFFF506E)
+
+val BgBottomNav = Color(0xFF1D192B)
