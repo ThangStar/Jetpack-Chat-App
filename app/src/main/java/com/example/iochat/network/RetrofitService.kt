@@ -4,6 +4,8 @@ import com.example.iochat.config.APIConfig
 import com.example.iochat.config.UserCurrentConfig
 import com.example.iochat.`object`.Auth
 import com.example.iochat.`object`.Message
+import com.example.iochat.`object`.Post
+import com.example.iochat.`object`.PostGet
 import com.example.iochat.`object`.User
 import com.example.iochat.`object`.UserCurrent
 import com.google.gson.GsonBuilder
@@ -38,6 +40,12 @@ interface ChatAppAPIService {
 
     @GET("/user/search")
     suspend fun searchByNameOrEmail(@Query("q") keyWord: String): Array<User>
+
+    @POST("/post/insert-post")
+    suspend fun insertOnePost(@Body post:PostGet): Boolean
+
+    @GET("/post/get-all-post")
+    suspend fun getAllPost(): List<PostGet>
 }
 
 object ChatAPI {

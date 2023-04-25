@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.iochat.BuildConfig
 import com.example.iochat.components.MyButton
 import com.example.iochat.components.MyTextField
 import com.example.iochat.model.LoginViewModel
@@ -74,10 +75,11 @@ fun ContentLogin(
         ) {
             Button(
                 onClick = {
-                    NotificationService(context).showNotification(
-                        "Tin nhắn mới",
-                        "OK"
-                    )
+//                    NotificationService(context).showNotification(
+//                        "Tin nhắn mới",
+//                        "OK"
+//                    )
+//                          BuildConfig.API_URL_CHAT_APP
                 },
             ) {
                 Text(text = "SHOW NOTI", color = Color.Black)

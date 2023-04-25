@@ -6,10 +6,12 @@ plugins {
 }
 
 android {
+
     namespace 'com.example.iochat'
     compileSdk 33
 
     defaultConfig {
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -76,7 +78,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
-    implementation ('io.socket:socket.io-client:2.0.0') {
+    implementation('io.socket:socket.io-client:2.0.0') {
         exclude group: 'org.json', module: 'json'
     }
     implementation 'com.google.code.gson:gson:2.10.1'
@@ -96,6 +98,9 @@ dependencies {
     //material3
     implementation "androidx.compose.material3:material3:1.0.1"
     implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
+
+    //lottie
+    implementation "com.airbnb.android:lottie-compose:6.0.0"
 }
 kapt {
     correctErrorTypes = true
@@ -113,4 +118,10 @@ configurations.all {
 }
 tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask).configureEach {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+}
+
+def getResourceString(name) {
+    def res = android.sourceSets.main.res
+    def xml = new XmlParser().parse(res.openRawResource(res.getIdentifier(name, "string", android.defaultConfig.applicationId)))
+    return xml.text()
 }

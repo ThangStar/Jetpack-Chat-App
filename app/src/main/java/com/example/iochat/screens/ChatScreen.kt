@@ -1,8 +1,6 @@
 package com.example.iochat.screens
 
-import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -39,9 +37,6 @@ import com.example.iochat.model.ChatViewModel
 import com.example.iochat.`object`.Message
 import com.example.iochat.ui.theme.*
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 
 @Composable
@@ -243,9 +238,9 @@ fun CardMessage(
                 isShowTime = !isShowTime
             },
             isExpand = isShowTime,
-            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(
-                message.time
-            )
+//            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(
+//                message.time
+//            )
         )
     } else {
         MyCardMessageGet(
@@ -254,9 +249,7 @@ fun CardMessage(
                 isShowTime = !isShowTime
             },
             isExpand = isShowTime,
-            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(
-                message.time
-            )
+
         )
     }
 

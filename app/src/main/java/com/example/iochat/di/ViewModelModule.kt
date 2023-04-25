@@ -10,7 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module
 @InstallIn(ViewModelComponent::class)
-object ViewModelModule {
+object  ViewModelModule {
     /*
     *
     * find and inject to params in your view model

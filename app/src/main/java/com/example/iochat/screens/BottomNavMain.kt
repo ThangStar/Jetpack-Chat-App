@@ -79,7 +79,7 @@ fun BottomNavMain(
                 HomeScreen(navController = navController)
             }
             composable(BottomNavScreen.PostScreen.route) {
-                LoginScreen()
+                PostScreen()
             }
             composable(BottomNavScreen.ProfileScreen.route) {
                 LoginScreen()

@@ -29,3 +29,10 @@ val BgInputSendMessage = Color(0xFF021C38)
 val TintIcon = Color(0xFFFF506E)
 
 val BgBottomNav = Color(0xFF1D192B)
+val BgActionPost = Color(0xFF4600FF)
+
+val ColorRan1 = Color(0xFF64230D)
+val ColorRan2 = Color(0xFF00B25A)
+val ColorRan3 = Color(0xFFEA3F45)
+val ColorRan4 = Color(0xFF4600FF)
+

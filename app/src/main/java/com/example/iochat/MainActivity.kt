@@ -37,11 +37,9 @@ class MainActivity : ComponentActivity() {
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
 
         setContent {
-            IOChatTheme {
                 // A surface container using the 'background' color from the theme
                 navController = rememberNavController()
                 SetUpNavGraph(navController = navController)
-            }
         }
     }
 

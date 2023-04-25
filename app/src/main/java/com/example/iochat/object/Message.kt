@@ -9,5 +9,4 @@ open class Message(
     val message: String = "",
     val target: String = "",
     val idUserGet: String = "",
-    val time: Date = Calendar.getInstance().time
 )

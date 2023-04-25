@@ -77,7 +77,12 @@ class ChatViewModel @Inject constructor(
                 val jsonArray = arg[0].toString()
                 //array json to array object
                 val type = object : TypeToken<Array<Message>>() {}.type
+                try {
                 listMessage = gson.fromJson<Array<Message>>(jsonArray, type)
+
+                }catch (e: Exception){
+                    Log.d("SSS", "ERROR: "+e.message)
+                }
                 Log.d("SSS SIZE MESSAGE", "${listMessage.size}")
                 listMessage.map {
                     Log.d("SSS CONTENT ", it.message);
